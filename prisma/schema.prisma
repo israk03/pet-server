@@ -8,22 +8,29 @@ datasource db {
   provider = "postgresql"
 }
 
-enum Role{
+enum Role {
   OWNER
   SITTER
   ADMIN
 }
 
-enum Status{
+enum Status {
   ACTIVE
   SUSPENDED
 }
 
-enum ServiceType{
+enum ServiceType {
   WALKING
   BOARDING
   DAYCARE
   SITTING
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
 }
 
 model User {
@@ -37,7 +44,8 @@ model User {
     updatedAt DateTime @updatedAt
 
     sitterProfile SitterProfile?
-    pets    Pet[]
+    pets      Pet[]
+    booking   Booking[]
 
 
     @@index([status])
@@ -55,6 +63,8 @@ model Pet{
     updatedAt DateTime @updatedAt
 
     owner     User @relation(fields: [ownerId], references: [id])
+
+    booking   Booking[]
 
     @@index([ownerId])
     @@map("pets")
@@ -75,6 +85,8 @@ model SitterProfile {
 
   services      Service[]
 
+  booking   Booking[]
+
 
   @@map("sitterProfiles")
 }
@@ -93,8 +105,38 @@ model Service {
   sitterId      String
   sitter        SitterProfile   @relation(fields: [sitterId], references: [id])
 
+  booking   Booking[]
+
 
 
   @@map("services")
 
+}
+
+model Booking {
+  id          String        @id @default(uuid())
+
+  ownerId     String
+  sitterId    String
+  petId       String
+  serviceId   String
+
+  startDate   DateTime
+  endDate     DateTime
+
+  totalPrice  Float
+
+  status      BookingStatus @default(PENDING)
+
+  notes       String?
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  owner       User        @relation(fields: [ownerId], references: [id])
+  sitter      SitterProfile @relation(fields: [sitterId], references: [id])
+  pet         Pet         @relation(fields: [petId], references: [id])
+  service     Service     @relation(fields: [serviceId], references: [id])
+
+  @@map("bookings")
 }
