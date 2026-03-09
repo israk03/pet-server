@@ -19,6 +19,13 @@ enum Status{
   SUSPENDED
 }
 
+enum ServiceType{
+  WALKING
+  BOARDING
+  DAYCARE
+  SITTING
+}
+
 model User {
     id       String @id @default(uuid())
     name     String 
@@ -66,5 +73,28 @@ model SitterProfile {
   user          User      @relation(fields: [sitterId], references: [id])
 
 
+  services      Service[]
+
+
   @@map("sitterProfiles")
+}
+
+
+model Service {
+  id            String    @id @default(uuid())
+  serviceType   ServiceType
+  price         Float
+  description   String
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+
+  sitterId      String
+  sitter        SitterProfile   @relation(fields: [sitterId], references: [id])
+
+
+
+  @@map("services")
+
 }
