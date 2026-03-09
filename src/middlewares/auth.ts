@@ -2,6 +2,7 @@
 import { NextFunction, Request, Response } from "express"
 import  jwt  from "jsonwebtoken";
 import { prisma } from "../lib/prisma.js";
+import { AuthUser } from "../types/express.js";
 
 
 
@@ -33,20 +34,20 @@ const auth = (...roles: UserRole[]) =>{
       }
 
       const token = authHeader.split(" ")[1];
-      console.log("Extracted Token:", token);
+      // console.log("Extracted Token:", token);
 
       const decoded = jwt.verify(
         token,
         process.env.JWT_SECRET as string
       ) as any;
 
-      console.log("Decoded:", decoded);
+      //console.log("Decoded:", decoded);
 
       const userData = await prisma.user.findUnique({
         where: { email: decoded.email },
       });
 
-      console.log("User from DB:", userData);
+      //console.log("User from DB:", userData);
 
       if (!userData) {
         throw new Error("User not found");
@@ -61,7 +62,7 @@ const auth = (...roles: UserRole[]) =>{
         throw new Error("Role not allowed");
       }
 
-      req.user = decoded;
+      req.user = decoded as AuthUser;
       next();
     } catch (error: any) {
       console.log("Auth Error:", error);
