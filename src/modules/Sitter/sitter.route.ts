@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.post('/', auth(UserRole.sitter), SitterController.createSitter);
 router.get('/', auth(UserRole.sitter), SitterController.getAllSitters);
-//router.get('/:id', auth(UserRole.sitter), SitterController.getSingleSitter);
+router.patch('/booking/:id', auth(UserRole.sitter), SitterController.updateBooking);
 
 export const SitterRoutes = router;

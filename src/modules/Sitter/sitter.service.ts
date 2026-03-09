@@ -1,3 +1,4 @@
+import { BookingStatus } from "@prisma/client";
 import { prisma } from "../../lib/prisma.js";
 
 // create sitter into database
@@ -53,18 +54,20 @@ const getAllSittersFromDB = async(userId: string)=>{
 
 }
 
-// get single sitter from database
-// const getSingleSitterFromDB = async(petId: string)=>{
+// update booking status
+const updateBookingStatus = async(status: BookingStatus, bookingId: string)=>{
+    const result = await prisma.booking.update({
+        where: {
+            id: bookingId,
+        },
+        data: {
+            status: status,
+        }
+    })
 
-//     const result = await prisma.pet.findUnique({
-//         where: {
-//             id: petId
-//         }
-//     })    
+    return result;
 
-//     return result;
-
-// }
+}
 
 
 
@@ -72,5 +75,5 @@ export const SitterService = {
     // Add service methods here
     createSitterIntoDB,
     getAllSittersFromDB,
-    //getSingleSitterFromDB
+    updateBookingStatus
 };

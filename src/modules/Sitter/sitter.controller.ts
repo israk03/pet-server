@@ -46,25 +46,28 @@ const getAllSitters = async(req: Request, res: Response)=>{
     }
 }
 
-// get single sitter controller
-// const getSingleSitter = async(req: Request, res: Response)=>{
-//     try {
-//         const result = await SitterService.getSingleSitterFromDB(req.params?.id as string)
-//         sendResponse(res,{
-//             status: 200,
-//             success: true,
-//             message: "Sitter fetched successfully",
-//             data: result
-//         })
-//     } catch (error) {
-//         sendResponse(res,{
-//             status: 500,
-//             success: false,
-//             message: "Failed to fetch sitter",
-//             data: error
-//         })
-//     }
-// }
+
+// update booking status controller
+const updateBooking = async(req: Request, res: Response)=>{
+    try {
+        const result = await SitterService.updateBookingStatus(req.body.status, req.params?.id as string)
+        
+        sendResponse(res,{
+            status: 200,
+            success: true,
+            message: "Booking status updated successfully",
+            data: result
+        })
+    } catch (error: any) {
+        sendResponse(res,{
+            status: 500,
+            success: false,
+            message: error?.message || "Something went wrong",
+            data: error
+        })
+    }
+}
+
 
 
 
@@ -74,5 +77,5 @@ export const SitterController = {
     // Add controller methods here
     createSitter,
     getAllSitters,
-    //getSingleSitter
+    updateBooking
 };
