@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { AuthService } from "./auth.service.js";
 import sendResponse from "../../utils/sendResponse.js";
 
 // create user controller
-const createUser = async(req: Request, res: Response)=>{
+const createUser = async(req: Request, res: Response, next: NextFunction)=>{
     try {
         const result = await AuthService.createUserIntoDB(req.body)
         
@@ -14,12 +14,7 @@ const createUser = async(req: Request, res: Response)=>{
             data: result
         })
     } catch (error) {
-        sendResponse(res,{
-            status: 500,
-            success: false,
-            message: "Failed to create user",
-            data: error
-        })
+        next(error)
     }
 }
 
